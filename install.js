@@ -2,15 +2,33 @@ import { execSync } from "node:child_process";
 import { build, startMarker, endMarker } from "./build.js";
 import fs from "node:fs";
 import path from "node:path";
+import os from "os";
 import { pathToFileURL } from "node:url";
 
 export function install(replaceInScriptPath, refreshSketchybar = true) {
   const { iconMapBashFn } = build();
 
-  fs.copyFileSync(
-    "./dist/sketchybar-app-font.ttf",
-    `${process.env.HOME}/Library/Fonts/sketchybar-app-font.ttf`
-  );
+  const platform = os.platform(); // 'darwin' for macOS, 'linux' for Linux
+
+  let fontDestDir;
+
+  if (platform === "darwin") {
+    fontDestDir = path.join(process.env.HOME, "Library", "Fonts");
+  } else if (platform === "linux") {
+    fontDestDir = path.join(process.env.HOME, ".local", "share", "fonts");
+  } else {
+    throw new Error("Unsupported OS. This script supports only macOS and Linux.");
+  }
+
+  // Make sure the destination directory exists
+  if (!fs.existsSync(fontDestDir)) {
+    fs.mkdirSync(fontDestDir, { recursive: true });
+  }
+
+  const sourceFontPath = path.resolve("./dist/sketchybar-app-font.ttf");
+  const destFontPath = path.join(fontDestDir, "sketchybar-app-font.ttf");
+
+  fs.copyFileSync(sourceFontPath, destFontPath);
 
   if (replaceInScriptPath) {
     const pathToScript = path.resolve(replaceInScriptPath);
