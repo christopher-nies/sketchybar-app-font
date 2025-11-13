@@ -58,7 +58,7 @@ _(Core method copied from <https://github.com/Jean-Tinland/simple-bar/issues/164
 
 For each icon I'm following these steps:
 
-1. I'm getting the original icon or, if not in a vector format I'm redrawing it in [Figma](https://www.figma.com). No need to be extremely precise as it is displayed in a really small size)
+1. I'm getting the original icon or, if not in a vector format I'm redrawing it in [Figma](https://www.figma.com). No need to be extremely precise as it is displayed in a really small size. All solid shapes will become part of the glyph. Anything you want to mask out needs to be actually masked out in the shape. Colors (including transparent color) don't matter.
 2. I'm setting the new icon in a `24x24` viewbox
 3. Then I'm optimising it using [SVGOMG](https://jakearchibald.github.io/svgomg/)
 4. Add the icon to /svgs/ folder, using a snake_case name surrounded by colons and a '.svg' extension
@@ -67,3 +67,7 @@ For each icon I'm following these steps:
 ## Incompatible SVG Features
 
 Unfortunately the `svgtofont` library does not support all SVG Features. Therefore, you should check your icons before submitting by running `pnpm run build:dev`, looking at the command output and sight checking the font glyphs in your browser at <http://localhost:3003>.
+You may also want to try the `oslllo-svg-fixer` npm package if you encounter issues with your svg: 
+```bash
+npx oslllo-svg-fixer -s svgs-to-fix -d svgs
+```
