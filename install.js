@@ -29,7 +29,15 @@ export function install(replaceInScriptPath, refreshSketchybar = true) {
   const destFontPath = path.join(fontDestDir, "sketchybar-app-font.ttf");
 
   fs.copyFileSync(sourceFontPath, destFontPath);
+  console.log(`✓ Font installed to: ${destFontPath}`);
 
+  // Skip SketchyBar-specific steps on Linux
+  if (platform === "linux") {
+    console.log("✓ Installation complete (Linux mode: font only)");
+    return;
+  }
+
+  // macOS-specific SketchyBar installation
   if (replaceInScriptPath) {
     const pathToScript = path.resolve(replaceInScriptPath);
     const scriptContents = fs.readFileSync(pathToScript, "utf8");
